@@ -13,7 +13,9 @@
     <string name="build_route">Build Route</string>
     <string name="add_to_list">Add to list</string>
     <string name="clear_list"> Clear List</string>
-    <string name="done_edit">Done</string>
+    <string name="done_edit">Done Edit</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
     <string name="number_prompt">number</string>
 
     <string-array name="numbers">

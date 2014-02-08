@@ -6,7 +6,9 @@
  * 8. after modify the existing addressinfo remember to update the entire datastruction info
  * 9. make sure the entire route has been update when the number of an address has been updated
  * 10. if the start direction for next location is oppsite to the current one than the route just show overlap without considering if we can do U turn at that point
- * 11. save current address list and reload it next time. check edit address !!!!!!
+ * 11. make sure pop-up for both clearList and delete address button 
+ * 
+ * Next time should start with 11
  */
 
 /*
@@ -35,6 +37,7 @@ import java.util.TreeSet;
 
 import org.json.JSONObject;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -62,6 +65,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainActivity extends FragmentActivity {
 	public final static String EXTRA_MESSAGE = "com.example.mapdemo.route_message";
+	public final static String TAG = "MapDemo";
 
 	public Spinner address1;
 	public Spinner address2;
@@ -93,6 +97,8 @@ public class MainActivity extends FragmentActivity {
 	private List<LatLng> tempRoute;
 
 	private Map<LatLng, List<LatLng>> startToEnds;
+
+	private Map<String, LatLng> locationToLatLng; // for fetching LatLng when we want to edit the address
 
 	private ArrayList<LatLng> routeMessage; // all locations for the final decision for entire route
 
@@ -127,7 +133,7 @@ public class MainActivity extends FragmentActivity {
 		startToEnds = new HashMap<LatLng, List<LatLng>>();   // change the List of end to Set. maybe better for remove location
 		routeMessage = new ArrayList<LatLng>();
 		locationToStreetIntersection = new HashMap<LatLng, String>();
-		
+		locationToLatLng = new HashMap<String, LatLng>();
 		
 		showAddressList();
 
@@ -208,6 +214,7 @@ public class MainActivity extends FragmentActivity {
 	
 			// Calculated the distance from the new address to every other address
 			updateRouteDistance(location);
+			locationToLatLng.put(eastWest + ":=:" + southNorth + ":=:" + n2, location);
 		}
 	}
 
@@ -291,17 +298,9 @@ public class MainActivity extends FragmentActivity {
 				((Spinner)findViewById(R.id.spinner_address1_fragment)).setSelection(selectedItem.index1, false);
 				((Spinner)findViewById(R.id.spinner_address2_fragment)).setSelection(selectedItem.index2, false);
 				((Spinner)findViewById(R.id.spinner_numbers_fragment)).setSelection(Integer.parseInt(selectedItem.number) - 1, false);
-				
-				
-				LatLng location = null;
-				try {
-					location = getIntersectionLocation(selectedItem.eastWest, selectedItem.southNorth);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 
-				deleteLocation(location);
+				LatLng location = locationToLatLng.get(selectedItem.eastWest + ":=:" + selectedItem.southNorth + ":=:" + selectedItem.number);
+				deleteHelper(location);
 				editPosition = position;
 
 			}
@@ -309,21 +308,7 @@ public class MainActivity extends FragmentActivity {
 		});
 	}
 
-	private void deleteLocation(LatLng location) {
-		
-		/*
-		 * 
-		addressInfoList = new ArrayList<AddressInfoItem>();
-		pairToWaypoints = new HashMap<StartEndPair, List<LatLng>>();
-		locationList = new ArrayList<LatLng>();
-		locationToNumber = new HashMap<LatLng, Double>();
-		pairToDistance = new HashMap<StartEndPair, Double>();
-		optimalRoute = new ArrayList<LatLng>();
-		tempRoute = new ArrayList<LatLng>();
-		startToEnds = new HashMap<LatLng, List<LatLng>>();   // change the List of end to Set. maybe better for remove location
-		routeMessage = new ArrayList<LatLng>();
-		locationToStreetIntersection = new HashMap<LatLng, String>();
-		 */
+	private void deleteHelper(LatLng location) {
 		if (location != null) {
 			// delete all the old records about this location
 			locationList.remove(location);
@@ -344,7 +329,24 @@ public class MainActivity extends FragmentActivity {
 				pairToWaypoints.keySet().remove(pair1);
 				pairToWaypoints.keySet().remove(pair2);
 			}
+
+			// Change saved address info
+			SharedPreferences.Editor editor = savedListInfoPref.edit();
+			editor.remove(String.valueOf(editPosition));
+			Log.d(TAG, "Replace the saved address in postion " + editPosition);
+			editor.commit();
 		}
+	}
+
+	public void deleteLocationInfo(View view) {
+		final Dialog dialog = new Dialog(this);
+
+        dialog.setContentView(R.layout.alert_message);
+        dialog.setTitle("Custom Alert Dialog");
+
+        Button delete=(Button)dialog.findViewById(R.id.delete_after_alert);
+        Button cancel=(Button)dialog.findViewById(R.id.cancel);
+        dialog.show();
 	}
 
 	public void buildRoute(View view) {
@@ -382,11 +384,17 @@ public class MainActivity extends FragmentActivity {
 
 		AddressInfoItem newAddress = new AddressInfoItem(eastWest, southNorth, n, address1Edit.getSelectedItemPosition(), address2Edit.getSelectedItemPosition());
 		addressInfoList.set(editPosition, newAddress);
-
 		adapter.notifyDataSetChanged();
 
 		LatLng location = getLocation(eastWest, southNorth, n);
 		updateRouteDistance(location);
+		Log.d(TAG, "Replace the orginal address info with " + eastWest + ", " + southNorth + ", " + n);
+
+		// Change saved address info
+		SharedPreferences.Editor editor = savedListInfoPref.edit();
+		editor.putString(String.valueOf(editPosition), eastWest + ":=:" + southNorth + ":=:" + n);
+		Log.d(TAG, "Replace the saved address in postion " + editPosition);
+		editor.commit();
 	}
 
 	private LatLng getIntersectionLocation(String eastWest, String southNorth) throws IOException {
