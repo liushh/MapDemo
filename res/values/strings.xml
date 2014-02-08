@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MapDemo</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
+    <string name="title_activity_display_message">My Message</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">What is it?</string>
+    <string name="build_route">Build Route</string>
+    <string name="add_to_list">Add to list</string>
+    <string name="clear_list"> Clear List</string>
+    <string name="done_edit">Done</string>
+    <string name="number_prompt">number</string>
+
+    <string-array name="numbers">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7+</item>
+    </string-array>
+
+    <string name="address_prompt1">east_west</string>
+
+    <string-array name="address1">
+        <item>NE Pacific St</item>
+        <item>NE 40th St</item>
+        <item>NE Campus Pkway</item>
+        <item>NE 41th St</item>
+        <item>NE 42nd St</item>
+        <item>NE 43rd St</item>
+        <item>NE 45th St</item>
+        <item>NE 47th St</item>
+        <item>NE 50th St</item>
+        <item>NE 51st St</item>
+        <item>NE 52nd St</item>
+        <item>NE 53rd St</item>
+        <item>NE 54th St</item>
+        <item>NE 55th St</item>
+        <item>NE Blakeley St</item>
+    </string-array>
+
+    <!--
+    1. show the prompt in correct way instead of use the first item as default
+    2. for some specific build like lander to terry show detail message
+    -->
+    <string name="address_prompt2">south_north</string>
+
+    <string-array name="address2">
+        <item>7th Ave NE</item>
+        <item>8th Ave NE</item>
+        <item>9th Ave NE</item>
+        <item>Roosevelt Way NE</item>
+        <item>11th Ave NE</item>
+        <item>12th Ave NE</item>
+        <item>Brooklyn Ave NE</item>
+        <item>University Way NE</item>
+        <item>15th Ave NE</item>
+        <item>16th Ave NE</item>
+        <item>17th Ave NE</item>
+        <item>18th Ave NE</item>
+        <item>19th Ave NE</item>
+        <item>20th Ave NE</item>
+        <item>21st Ave NE</item>
+        <item>22rd Ave NE</item>
+        <item>Ravenna Ave NE</item>
+        <item>24th Ave NE</item>
+        <item>25th Ave NE</item>
+        <item>26th Ave NE</item>
+        <item>27th Ave NE</item>
+        <item>28th Ave NE</item>
+        <item>29th Ave NE</item>
+        <item>30th Ave NE</item>
+        <item>Mary Gates Memorial Dr NE</item>
+        
+    </string-array>
+
+    <string name="title_activity_show_route">ShowRoute</string>
+    <string name="title_activity_build_route">Route</string>
+
+</resources>
